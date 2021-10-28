@@ -1,13 +1,13 @@
 package cuisiner
 
 import (
-	"strings"
 	"regexp"
+	"strings"
 )
 
 type Recipe struct {
 	Ingredients []string
-	Directions []string
+	Directions  []string
 }
 
 func Parse(input string) (*Recipe, error) {
@@ -26,7 +26,7 @@ func Parse(input string) (*Recipe, error) {
 	}
 	recipe := &Recipe{
 		Ingredients: ingredients,
-		Directions: directions,
+		Directions:  directions,
 	}
 	return recipe, nil
 }

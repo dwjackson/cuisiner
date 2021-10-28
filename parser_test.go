@@ -11,7 +11,7 @@ func TestParsePlainText(t *testing.T) {
 		t.Fatalf("Expected 1 direction")
 	} else {
 		direction := recipe.Directions[0]
-		testDirection(t, input, direction)
+		assertEqual(t, input, direction)
 	}
 }
 
@@ -40,9 +40,7 @@ func TestIngredientWithoutQuantity(t *testing.T) {
 	if len(recipe.Ingredients) != 1 {
 		t.Fatalf("Expected 1 ingredient")
 	}
-	if recipe.Ingredients[0] != "potato" {
-		t.Fatalf("Expected ingredient potato, got %q", recipe.Ingredients[0])
-	}
+	assertEqual(t, "potato", recipe.Ingredients[0])
 }
 
 func TestTwoIngredientsWithoutQuantity(t *testing.T) {
@@ -53,16 +51,13 @@ func TestTwoIngredientsWithoutQuantity(t *testing.T) {
 	}
 	if len(recipe.Ingredients) != 2 {
 		t.Fatalf("Expected 2 ingredients")
-	}
-	if recipe.Ingredients[0] != "potato" {
-		t.Fatalf("Expected ingredient potato, got %q", recipe.Ingredients[0])
-	}
-	if recipe.Ingredients[1] != "leek" {
-		t.Fatalf("Expected ingredient leek, got %q", recipe.Ingredients[1])
+	} else {
+		assertEqual(t, "potato", recipe.Ingredients[0])
+		assertEqual(t, "leek", recipe.Ingredients[1])
 	}
 }
 
-func testDirection(t *testing.T, expected string, actual string) {
+func assertEqual(t *testing.T, expected string, actual string) {
 	if actual != expected {
 		t.Fatalf("Expected %q, got %q", expected, actual)
 	}
