@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"math"
 	"os"
+	"strings"
 )
 
 const USAGE string = "USAGE: cuisiner [COMMAND] [ARGS...]"
@@ -81,11 +82,14 @@ func htmlCommand(args []string) {
 		os.Exit(1)
 	}
 
+	lastDotIndex := strings.LastIndex(fileName, ".")
+	recipeName := fileName[0:lastDotIndex]
+
 	fmt.Println("<!DOCTYPE html>")
 	fmt.Println("<html>")
 	fmt.Println("  <head>")
 	fmt.Println("    <meta charset=\"utf-8\">")
-	fmt.Println("    <title>Recipe</title>") // TODO
+	fmt.Printf("    <title>%s</title>\n", recipeName)
 	fmt.Println("  </head>")
 	fmt.Println("  <body>")
 	fmt.Println("    <h1>Ingredients</h1>")
