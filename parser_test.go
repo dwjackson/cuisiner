@@ -1,4 +1,4 @@
-package cuisiner
+package main
 
 import (
 	"testing"
