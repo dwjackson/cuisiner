@@ -53,5 +53,10 @@ func printCommand(args []string) {
 			fmt.Printf("\t* %s\n", ingredient.Name)
 		}
 	}
-	// TODO
+
+	fmt.Println("")
+	fmt.Println("Directions")
+	for i, direction := range recipe.Directions {
+		fmt.Printf("\t%d. %s\n", i+1, direction)
+	}
 }
