@@ -36,6 +36,11 @@ recipe3.cook
 
 The output is printed to `stdout` as is in markdown.
 
+## Note: Fractional Amounts
+
+At the moment, fractional amounts can only be written as decimals in recipes.
+For example, the amount 1/8 must be written as 0.125.
+
 ## License
 
 This project is licensed under the MIT License.
