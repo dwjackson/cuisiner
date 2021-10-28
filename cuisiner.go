@@ -35,8 +35,7 @@ func printCommand(args []string) {
 	}
 	fileName := args[0]
 
-	lastDotIndex := strings.LastIndex(fileName, ".")
-	recipeTitle := fileName[0:lastDotIndex]
+	recipeTitle := recipeTitleFromFileName(fileName)
 
 	recipe, err := parseRecipeFile(fileName)
 	if err != nil {
@@ -79,6 +78,16 @@ func parseRecipeFile(fileName string) (*Recipe, error) {
 		return nil, errors.New("Error parsing recipe")
 	}
 	return recipe, nil
+}
+
+func recipeTitleFromFileName(fileName string) string {
+	lastDotIndex := strings.LastIndex(fileName, ".")
+	if lastDotIndex < 0 {
+		lastDotIndex = len(fileName)
+	}
+	recipeTitle := fileName[0:lastDotIndex]
+	recipeTitle = strings.ReplaceAll(recipeTitle, "_", " ")
+	return recipeTitle
 }
 
 func shoppingCommand() {
