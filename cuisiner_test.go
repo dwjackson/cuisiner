@@ -41,3 +41,9 @@ func TestIngredientWithFractionalAmountAndUnit(t *testing.T) {
 	line := createIngredientLine(&ingredient)
 	assertStrEqual(t, "1.5 tsp hot pepper flakes", line)
 }
+
+func TestIngredientWithFractionalAmountLessThanOneAndUnit(t *testing.T) {
+	ingredient := fakeIngredient("salt", 0.5, "tsp")
+	line := createIngredientLine(&ingredient)
+	assertStrEqual(t, "0.5 tsp salt", line)
+}

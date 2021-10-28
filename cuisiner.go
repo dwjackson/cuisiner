@@ -118,21 +118,25 @@ func createIngredientLine(ingredient *Ingredient) string {
 		return fmt.Sprintf("%d %s %s", qInt, ingredient.Quantity.Unit, ingredient.Name)
 	}
 
-	if isInteger && q > 1 {
+	if isInteger && q != 1 {
 		qInt := int(q)
 		return fmt.Sprintf("%d %s", qInt, ingredient.Name)
 	}
 
+	if isInteger && q == 1 {
+		return fmt.Sprintf("%s", ingredient.Name)
+	}
+
 	amountStr := fmt.Sprintf("%.5f", ingredient.Quantity.Amount)
 	amountStr = strings.Trim(amountStr, "0")
+	if amountStr[0] == '.' {
+		amountStr = "0" + amountStr
+	}
 
-	if q > 1 && ingredient.Quantity.Unit != "" {
+	if ingredient.Quantity.Unit != "" {
 		return fmt.Sprintf("%s %s %s", amountStr, ingredient.Quantity.Unit, ingredient.Name)
 	}
 
-	if q > 1 {
-		return fmt.Sprintf("%s %s", amountStr, ingredient.Name)
-	}
+	return fmt.Sprintf("%s %s", amountStr, ingredient.Name)
 
-	return fmt.Sprintf("%s", ingredient.Name)
 }
