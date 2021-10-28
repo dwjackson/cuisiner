@@ -81,7 +81,7 @@ func TestIngredientWithSpaceInName(t *testing.T) {
 	} else {
 		ingredient := recipe.Ingredients[0]
 		assertStrEqual(t, "crème fraîche", ingredient.Name)
-		assertQuantityEqual(t, 1, ingredient.Quantity)
+		assertQuantityEqual(t, 1, ingredient.Quantity.Amount)
 
 		direction := recipe.Directions[0]
 		assertStrEqual(t, "Put the crème fraîche into the bowl", direction)
@@ -99,7 +99,7 @@ func TestIngredientWithQuantity(t *testing.T) {
 	} else {
 		ingredient := recipe.Ingredients[0]
 		assertStrEqual(t, "potatos", ingredient.Name)
-		assertQuantityEqual(t, 2, ingredient.Quantity)
+		assertQuantityEqual(t, 2, ingredient.Quantity.Amount)
 	}
 }
 
@@ -114,11 +114,11 @@ func TestIngredientsWithAndWithoutQuantity(t *testing.T) {
 	} else {
 		potato := recipe.Ingredients[0]
 		assertStrEqual(t, "potatos", potato.Name)
-		assertQuantityEqual(t, 2, potato.Quantity)
+		assertQuantityEqual(t, 2, potato.Quantity.Amount)
 
 		leek := recipe.Ingredients[1]
 		assertStrEqual(t, "leek", leek.Name)
-		assertQuantityEqual(t, 1, leek.Quantity)
+		assertQuantityEqual(t, 1, leek.Quantity.Amount)
 	}
 	direction := recipe.Directions[0]
 	assertStrEqual(t, "Chop up potatos and leek and set aside", direction)
@@ -136,13 +136,13 @@ func TestIngredientsWithQuantityAndUnit(t *testing.T) {
 	} else {
 		water := recipe.Ingredients[0]
 		assertStrEqual(t, "water", water.Name)
-		assertQuantityEqual(t, 300, water.Quantity)
-		assertStrEqual(t, "mL", water.Unit)
+		assertQuantityEqual(t, 300, water.Quantity.Amount)
+		assertStrEqual(t, "mL", water.Quantity.Unit)
 
 		flour := recipe.Ingredients[1]
 		assertStrEqual(t, "flour", flour.Name)
-		assertQuantityEqual(t, 400, flour.Quantity)
-		assertStrEqual(t, "g", flour.Unit)
+		assertQuantityEqual(t, 400, flour.Quantity.Amount)
+		assertStrEqual(t, "g", flour.Quantity.Unit)
 	}
 }
 
@@ -154,8 +154,8 @@ func TestIngredientWithFractionalQuantityAndUnit(t *testing.T) {
 	}
 	sugar := recipe.Ingredients[0]
 	assertStrEqual(t, "sugar", sugar.Name)
-	assertQuantityEqual(t, 2.5, sugar.Quantity)
-	assertStrEqual(t, "tsp", sugar.Unit)
+	assertQuantityEqual(t, 2.5, sugar.Quantity.Amount)
+	assertStrEqual(t, "tsp", sugar.Quantity.Unit)
 }
 
 func TestSkipComment(t *testing.T) {

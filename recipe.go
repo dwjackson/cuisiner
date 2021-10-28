@@ -2,10 +2,14 @@ package main
 
 type QuantityAmount float64
 
+type Quantity struct {
+	Amount QuantityAmount
+	Unit   string
+}
+
 type Ingredient struct {
 	Name     string
-	Quantity QuantityAmount
-	Unit     string
+	Quantity Quantity
 }
 
 type Recipe struct {

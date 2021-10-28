@@ -46,12 +46,12 @@ func printCommand(args []string) {
 
 	fmt.Println("Ingredients")
 	for _, ingredient := range recipe.Ingredients {
-		q := float64(ingredient.Quantity)
+		q := float64(ingredient.Quantity.Amount)
 		if math.Floor(q) == q && q > 1.0 {
 			qInt := int(q)
-			fmt.Printf("\t* %d%s %s\n", qInt, ingredient.Unit, ingredient.Name)
+			fmt.Printf("\t* %d%s %s\n", qInt, ingredient.Quantity.Unit, ingredient.Name)
 		} else if q > 1.0 {
-			fmt.Printf("\t* %.2f%s %s\n", ingredient.Quantity, ingredient.Unit, ingredient.Name)
+			fmt.Printf("\t* %.2f%s %s\n", ingredient.Quantity.Amount, ingredient.Quantity.Unit, ingredient.Name)
 		} else {
 			fmt.Printf("\t* %s\n", ingredient.Name)
 		}
@@ -95,12 +95,12 @@ func htmlCommand(args []string) {
 	fmt.Println("    <h1>Ingredients</h1>")
 	fmt.Println("    <ul>")
 	for _, ingredient := range recipe.Ingredients {
-		q := float64(ingredient.Quantity)
+		q := float64(ingredient.Quantity.Amount)
 		if math.Floor(q) == q && q > 1.0 {
 			qInt := int(q)
-			fmt.Printf("      <li>%d%s %s</li>\n", qInt, ingredient.Unit, ingredient.Name)
+			fmt.Printf("      <li>%d%s %s</li>\n", qInt, ingredient.Quantity.Unit, ingredient.Name)
 		} else if q > 1.0 {
-			fmt.Printf("      <li>%.2f%s %s</li>\n", ingredient.Quantity, ingredient.Unit, ingredient.Name)
+			fmt.Printf("      <li>%.2f%s %s</li>\n", ingredient.Quantity.Amount, ingredient.Quantity.Unit, ingredient.Name)
 		} else {
 			fmt.Printf("<li>%s</li>\n", ingredient.Name)
 		}

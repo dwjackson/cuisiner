@@ -77,9 +77,11 @@ func discoverIngredients(line string) ([]Ingredient, string, error) {
 		}
 
 		ingredient := Ingredient{
-			Name:     name,
-			Quantity: QuantityAmount(quantity),
-			Unit:     unit,
+			Name: name,
+			Quantity: Quantity{
+				Amount: QuantityAmount(quantity),
+				Unit:   unit,
+			},
 		}
 		ingredients = append(ingredients, ingredient)
 	}
@@ -90,8 +92,10 @@ func discoverIngredients(line string) ([]Ingredient, string, error) {
 	for _, m := range reNoQuantity.FindAllString(line, -1) {
 		name := m[1:]
 		ingredient := Ingredient{
-			Name:     name,
-			Quantity: QuantityAmount(1),
+			Name: name,
+			Quantity: Quantity{
+				Amount: QuantityAmount(1),
+			},
 		}
 		ingredients = append(ingredients, ingredient)
 	}
