@@ -49,10 +49,10 @@ func printCommand(args []string) {
 	fmt.Println("")
 	for _, ingredient := range recipe.Ingredients {
 		q := float64(ingredient.Quantity.Amount)
-		if math.Floor(q) == q && q > 1.0 {
+		if math.Floor(q) == q && ingredient.Quantity.Unit != "" {
 			qInt := int(q)
 			fmt.Printf("* %d%s %s\n", qInt, ingredient.Quantity.Unit, ingredient.Name)
-		} else if q > 1.0 {
+		} else if q > 1 {
 			fmt.Printf("* %.2f%s %s\n", ingredient.Quantity.Amount, ingredient.Quantity.Unit, ingredient.Name)
 		} else {
 			fmt.Printf("* %s\n", ingredient.Name)
