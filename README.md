@@ -13,7 +13,7 @@ The `cuisiner` command line tool is used as follows:
 $ cuisiner [COMMAND] [ARGS...]
 ```
 
-### Print a Recipe as Plain Text
+### Print a Recipe
 
 ```sh
 $ cuisiner print [RECIPE_FILE]
