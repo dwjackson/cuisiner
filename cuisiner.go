@@ -48,15 +48,8 @@ func printCommand(args []string) {
 	fmt.Println("## Ingredients")
 	fmt.Println("")
 	for _, ingredient := range recipe.Ingredients {
-		q := float64(ingredient.Quantity.Amount)
-		if math.Floor(q) == q && ingredient.Quantity.Unit != "" {
-			qInt := int(q)
-			fmt.Printf("* %d%s %s\n", qInt, ingredient.Quantity.Unit, ingredient.Name)
-		} else if q > 1 {
-			fmt.Printf("* %.2f%s %s\n", ingredient.Quantity.Amount, ingredient.Quantity.Unit, ingredient.Name)
-		} else {
-			fmt.Printf("* %s\n", ingredient.Name)
-		}
+		ingredientLine := createIngredientLine(&ingredient)
+		fmt.Printf("* %s\n", ingredientLine)
 	}
 	fmt.Println("")
 
@@ -114,4 +107,32 @@ func shoppingCommand() {
 	for _, item := range list {
 		fmt.Printf("* %s\n", item)
 	}
+}
+
+func createIngredientLine(ingredient *Ingredient) string {
+	q := float64(ingredient.Quantity.Amount)
+	isInteger := math.Floor(q) == q
+
+	if isInteger && ingredient.Quantity.Unit != "" {
+		qInt := int(q)
+		return fmt.Sprintf("%d %s %s", qInt, ingredient.Quantity.Unit, ingredient.Name)
+	}
+
+	if isInteger && q > 1 {
+		qInt := int(q)
+		return fmt.Sprintf("%d %s", qInt, ingredient.Name)
+	}
+
+	amountStr := fmt.Sprintf("%.5f", ingredient.Quantity.Amount)
+	amountStr = strings.Trim(amountStr, "0")
+
+	if q > 1 && ingredient.Quantity.Unit != "" {
+		return fmt.Sprintf("%s %s %s", amountStr, ingredient.Quantity.Unit, ingredient.Name)
+	}
+
+	if q > 1 {
+		return fmt.Sprintf("%s %s", amountStr, ingredient.Name)
+	}
+
+	return fmt.Sprintf("%s", ingredient.Name)
 }
