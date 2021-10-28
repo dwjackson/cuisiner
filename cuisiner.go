@@ -18,6 +18,8 @@ func main() {
 	switch commandName {
 	case "print":
 		printCommand(os.Args[2:])
+	case "html":
+		htmlCommand(os.Args[2:])
 	default:
 		fmt.Printf("Invalid command: %s\n", commandName)
 	}
@@ -59,4 +61,53 @@ func printCommand(args []string) {
 	for i, direction := range recipe.Directions {
 		fmt.Printf("\t%d. %s\n", i+1, direction)
 	}
+}
+
+func htmlCommand(args []string) {
+	if len(args) < 1 {
+		fmt.Println("File name required")
+		os.Exit(1)
+	}
+	fileName := args[0]
+	contentBytes, readError := ioutil.ReadFile(fileName)
+	if readError != nil {
+		fmt.Println("Error reading file")
+		os.Exit(1)
+	}
+	content := string(contentBytes)
+	recipe, parseError := Parse(content)
+	if parseError != nil {
+		fmt.Println("Error parsing recipe")
+		os.Exit(1)
+	}
+
+	fmt.Println("<!DOCTYPE html>")
+	fmt.Println("<html>")
+	fmt.Println("  <head>")
+	fmt.Println("    <meta charset=\"utf-8\">")
+	fmt.Println("    <title>Recipe</title>") // TODO
+	fmt.Println("  </head>")
+	fmt.Println("  <body>")
+	fmt.Println("    <h1>Ingredients</h1>")
+	fmt.Println("    <ul>")
+	for _, ingredient := range recipe.Ingredients {
+		q := float64(ingredient.Quantity)
+		if math.Floor(q) == q && q > 1.0 {
+			qInt := int(q)
+			fmt.Printf("      <li>%d%s %s</li>\n", qInt, ingredient.Unit, ingredient.Name)
+		} else if q > 1.0 {
+			fmt.Printf("      <li>%.2f%s %s</li>\n", ingredient.Quantity, ingredient.Unit, ingredient.Name)
+		} else {
+			fmt.Printf("<li>%s</li>\n", ingredient.Name)
+		}
+	}
+	fmt.Println("    </ul>")
+	fmt.Println("    <h1>Directions</h1>")
+	fmt.Println("    <ol>")
+	for _, direction := range recipe.Directions {
+		fmt.Printf("      <li>%s</li>\n", direction)
+	}
+	fmt.Println("    </ol>")
+	fmt.Println("  </body>")
+	fmt.Println("</html>")
 }

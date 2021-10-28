@@ -17,6 +17,12 @@ $ cuisiner [COMMAND] [ARGS...]
 $ cuisiner print [RECIPE_FILE]
 ```
 
+### Format a Recipe as HTML
+
+```sh
+$ cuisiner html [RECIPE_FILE]
+```
+
 ## License
 
 This project is licensed under the MIT License.
