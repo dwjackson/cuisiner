@@ -44,7 +44,7 @@ func Parse(input string) (*Recipe, error) {
 func discoverIngredients(line string) ([]Ingredient, string) {
 	var ingredients []Ingredient
 
-	reQuantity := regexp.MustCompile(`\@([^\{\@]+)\{((\d+\.?\d*)(\%[^\}]+)?)?\}`)
+	reQuantity := regexp.MustCompile(`\@([^\{\@#]+)\{((\d+\.?\d*)(\%[^\}]+)?)?\}`)
 	for _, m := range reQuantity.FindAllStringSubmatch(line, -1) {
 		name := m[1]
 

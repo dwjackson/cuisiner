@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"math"
 	"io/ioutil"
+	"math"
 	"os"
 )
 

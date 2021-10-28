@@ -195,6 +195,19 @@ func TestCookware(t *testing.T) {
 	assertStrEqual(t, "Put onions in the sauce pan", recipe.Directions[1])
 }
 
+func TestIngredientAndCookwareOnTheSameLine(t *testing.T) {
+	input := "Put the chopped @carrot into the #sauce pan{}"
+	recipe, err := Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed")
+	}
+
+	assertIntEqual(t, 1, len(recipe.Cookware))
+	assertIntEqual(t, 1, len(recipe.Ingredients))
+	assertStrEqual(t, "carrot", recipe.Ingredients[0].Name)
+	assertStrEqual(t, "sauce pan", recipe.Cookware[0])
+}
+
 func assertStrEqual(t *testing.T, expected string, actual string) {
 	if actual != expected {
 		t.Fatalf("Expected %q, got %q", expected, actual)
