@@ -9,6 +9,7 @@ import (
 func Parse(input string) (*Recipe, error) {
 	var ingredients []Ingredient
 	var directions []string
+	var timers []Timer
 	lines := strings.Split(input, "\n")
 	for _, line := range lines {
 		trimmedLine := removeComments(line)
@@ -20,11 +21,16 @@ func Parse(input string) (*Recipe, error) {
 		for _, ingredient := range lineIngredients {
 			ingredients = append(ingredients, ingredient)
 		}
+		lineTimers, parsedLine := discoverTimers(parsedLine)
+		for _, timer := range lineTimers {
+			timers = append(timers, timer)
+		}
 		directions = append(directions, parsedLine)
 	}
 	recipe := &Recipe{
 		Ingredients: ingredients,
 		Directions:  directions,
+		Timers:      timers,
 	}
 	return recipe, nil
 }
@@ -75,4 +81,23 @@ func removeComments(line string) string {
 	commentRegex := regexp.MustCompile("//.*")
 	commentsRemoved := commentRegex.ReplaceAllString(line, "")
 	return strings.TrimSpace(commentsRemoved)
+}
+
+func discoverTimers(line string) ([]Timer, string) {
+	var timers []Timer
+	timerRegex := regexp.MustCompile(`~\{(\d+\.?\d*)%([^\}]+)\}`)
+	for _, m := range timerRegex.FindAllStringSubmatch(line, -1) {
+		duration, err := strconv.ParseFloat(m[1], 64)
+		if err != nil {
+			panic("Bad duration") // TODO: Do not panic
+		}
+		unit := m[2]
+		timer := Timer{
+			Duration: duration,
+			Unit:     unit,
+		}
+		timers = append(timers, timer)
+	}
+	parsedLine := timerRegex.ReplaceAllString(line, "$1 $2")
+	return timers, parsedLine
 }

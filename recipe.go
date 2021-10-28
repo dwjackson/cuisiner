@@ -11,4 +11,10 @@ type Ingredient struct {
 type Recipe struct {
 	Ingredients []Ingredient
 	Directions  []string
+	Timers      []Timer
+}
+
+type Timer struct {
+	Duration float64
+	Unit     string
 }

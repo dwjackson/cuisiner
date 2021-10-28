@@ -134,6 +134,22 @@ func TestSkipComment(t *testing.T) {
 	assertStrEqual(t, "Add sugar to bowl", direction)
 }
 
+func TestTimer(t *testing.T) {
+	input := "Bake for ~{15%minutes}."
+	recipe, err := Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed")
+	}
+	assertIntEqual(t, 1, len(recipe.Timers))
+
+	timer := recipe.Timers[0]
+	assertDurationEqual(t, 15, timer.Duration)
+	assertStrEqual(t, "minutes", timer.Unit)
+
+	direction := recipe.Directions[0]
+	assertStrEqual(t, "Bake for 15 minutes.", direction)
+}
+
 func assertStrEqual(t *testing.T, expected string, actual string) {
 	if actual != expected {
 		t.Fatalf("Expected %q, got %q", expected, actual)
@@ -147,6 +163,12 @@ func assertIntEqual(t *testing.T, expected int, actual int) {
 }
 
 func assertQuantityEqual(t *testing.T, expected QuantityAmount, actual QuantityAmount) {
+	if actual != expected {
+		t.Fatalf("Expected %f, got %f", expected, actual)
+	}
+}
+
+func assertDurationEqual(t *testing.T, expected float64, actual float64) {
 	if actual != expected {
 		t.Fatalf("Expected %f, got %f", expected, actual)
 	}
