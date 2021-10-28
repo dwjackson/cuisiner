@@ -29,6 +29,19 @@ $ cuisiner html [RECIPE_FILE]
 
 Output is printed to `stdout`.
 
+### Print a Shopping List
+
+Cuisiner can be used to create a shopping list from a bunch of recipes. Input
+is taken from `stdin`, one file name per line.
+
+```sh
+$ cuisiner shopping
+recipe1.cook
+recipe2.cook
+recipe3.cook
+^D
+```
+
 ## License
 
 This project is licensed under the MIT License.
