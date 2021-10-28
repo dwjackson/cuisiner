@@ -58,7 +58,7 @@ func TestTwoIngredientsWithoutQuantity(t *testing.T) {
 }
 
 func TestIngredientWithQuantity(t *testing.T) {
-	input := "Chop up @potato{2} and set aside"
+	input := "Chop up @potatos{2} and set aside"
 	recipe, err := Parse(input)
 	if err != nil {
 		t.Fatalf("Parse failed")
@@ -67,12 +67,31 @@ func TestIngredientWithQuantity(t *testing.T) {
 		t.Fatalf("Expected 1 ingredient")
 	} else {
 		ingredient := recipe.Ingredients[0]
-		assertStrEqual(t, "potato", ingredient.Name)
+		assertStrEqual(t, "potatos", ingredient.Name)
 		assertIntEqual(t, 2, ingredient.Quantity)
 	}
 }
 
-// TODO: Test ingredients with and without quantity in same line
+func TestIngredientsWithAndWithoutQuantity(t *testing.T) {
+	input := "Chop up @potatos{2} and @leek and set aside"
+	recipe, err := Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed")
+	}
+	if len(recipe.Ingredients) != 2 {
+		t.Fatalf("Expected 2 ingredients")
+	} else {
+		potato := recipe.Ingredients[0]
+		assertStrEqual(t, "potatos", potato.Name)
+		assertIntEqual(t, 2, potato.Quantity)
+
+		leek := recipe.Ingredients[1]
+		assertStrEqual(t, "leek", leek.Name)
+		assertIntEqual(t, 1, leek.Quantity)
+	}
+	direction := recipe.Directions[0]
+	assertStrEqual(t, "Chop up potatos and leek and set aside", direction)
+}
 
 func assertStrEqual(t *testing.T, expected string, actual string) {
 	if actual != expected {

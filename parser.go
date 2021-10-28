@@ -22,13 +22,15 @@ func Parse(input string) (*Recipe, error) {
 	lines := strings.Split(input, "\n")
 	for _, line := range lines {
 		trimmedLine := strings.TrimSpace(line)
-		if len(trimmedLine) > 0 {
-			lineIngredients := discoverIngredients(line)
-			for _, ingredient := range lineIngredients {
-				ingredients = append(ingredients, ingredient)
-			}
-			directions = append(directions, line)
+		if len(trimmedLine) == 0 {
+			// Skip empty lines
+			continue
 		}
+		lineIngredients, parsedLine := discoverIngredients(line)
+		for _, ingredient := range lineIngredients {
+			ingredients = append(ingredients, ingredient)
+		}
+		directions = append(directions, parsedLine)
 	}
 	recipe := &Recipe{
 		Ingredients: ingredients,
@@ -37,7 +39,7 @@ func Parse(input string) (*Recipe, error) {
 	return recipe, nil
 }
 
-func discoverIngredients(line string) []Ingredient {
+func discoverIngredients(line string) ([]Ingredient, string) {
 	var ingredients []Ingredient
 
 	reQuantity := regexp.MustCompile(`\@([^\@]+)\{(.+)\}`)
@@ -57,7 +59,7 @@ func discoverIngredients(line string) []Ingredient {
 
 	line = reQuantity.ReplaceAllString(line, "$1")
 
-	reNoQuantity := regexp.MustCompile(`\@\w+`)
+	reNoQuantity := regexp.MustCompile(`\@(\w+)`)
 	for _, m := range reNoQuantity.FindAllString(line, -1) {
 		name := m[1:]
 		quantity := 1
@@ -68,5 +70,7 @@ func discoverIngredients(line string) []Ingredient {
 		ingredients = append(ingredients, ingredient)
 	}
 
-	return ingredients
+	line = reNoQuantity.ReplaceAllString(line, "$1")
+
+	return ingredients, line
 }
