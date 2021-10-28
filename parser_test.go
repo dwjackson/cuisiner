@@ -181,6 +181,20 @@ func TestTimer(t *testing.T) {
 	assertStrEqual(t, "Bake for 15 minutes.", direction)
 }
 
+func TestCookware(t *testing.T) {
+	input := "Fill a #pot with water\nPut onions in the #sauce pan{}"
+	recipe, err := Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed")
+	}
+
+	assertIntEqual(t, 2, len(recipe.Cookware))
+	assertStrEqual(t, "pot", recipe.Cookware[0])
+	assertStrEqual(t, "sauce pan", recipe.Cookware[1])
+	assertStrEqual(t, "Fill a pot with water", recipe.Directions[0])
+	assertStrEqual(t, "Put onions in the sauce pan", recipe.Directions[1])
+}
+
 func assertStrEqual(t *testing.T, expected string, actual string) {
 	if actual != expected {
 		t.Fatalf("Expected %q, got %q", expected, actual)

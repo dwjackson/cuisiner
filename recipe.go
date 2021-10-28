@@ -12,6 +12,7 @@ type Recipe struct {
 	Ingredients []Ingredient
 	Directions  []string
 	Timers      []Timer
+	Cookware    []string
 }
 
 type Timer struct {

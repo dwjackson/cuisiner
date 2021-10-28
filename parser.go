@@ -10,6 +10,7 @@ func Parse(input string) (*Recipe, error) {
 	var ingredients []Ingredient
 	var directions []string
 	var timers []Timer
+	var cookware []string
 	lines := strings.Split(input, "\n")
 	for _, line := range lines {
 		trimmedLine := removeComments(line)
@@ -25,12 +26,17 @@ func Parse(input string) (*Recipe, error) {
 		for _, timer := range lineTimers {
 			timers = append(timers, timer)
 		}
+		lineCookware, parsedLine := discoverCookware(parsedLine)
+		for _, item := range lineCookware {
+			cookware = append(cookware, item)
+		}
 		directions = append(directions, parsedLine)
 	}
 	recipe := &Recipe{
 		Ingredients: ingredients,
 		Directions:  directions,
 		Timers:      timers,
+		Cookware:    cookware,
 	}
 	return recipe, nil
 }
@@ -109,4 +115,23 @@ func discoverTimers(line string) ([]Timer, string) {
 	}
 	parsedLine := timerRegex.ReplaceAllString(line, "$1 $2")
 	return timers, parsedLine
+}
+
+func discoverCookware(line string) ([]string, string) {
+	var cookware []string
+	cookwareSpacesRegex := regexp.MustCompile(`#([^\{]+)\{\}`)
+	for _, m := range cookwareSpacesRegex.FindAllStringSubmatch(line, -1) {
+		name := m[1]
+		cookware = append(cookware, name)
+	}
+	line = cookwareSpacesRegex.ReplaceAllString(line, "$1")
+
+	cookwareNoSpacesRegex := regexp.MustCompile(`#(\pL+)`)
+	for _, m := range cookwareNoSpacesRegex.FindAllStringSubmatch(line, -1) {
+		name := m[1]
+		cookware = append(cookware, name)
+	}
+	line = cookwareNoSpacesRegex.ReplaceAllString(line, "$1")
+
+	return cookware, line
 }
