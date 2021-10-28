@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"math"
@@ -32,15 +33,9 @@ func printCommand(args []string) {
 		os.Exit(1)
 	}
 	fileName := args[0]
-	contentBytes, readError := ioutil.ReadFile(fileName)
-	if readError != nil {
-		fmt.Println("Error reading file")
-		os.Exit(1)
-	}
-	content := string(contentBytes)
-	recipe, parseError := Parse(content)
-	if parseError != nil {
-		fmt.Println("Error parsing recipe")
+	recipe, err := parseRecipeFile(fileName)
+	if err != nil {
+		fmt.Printf("%s\n", err)
 		os.Exit(1)
 	}
 
@@ -64,21 +59,29 @@ func printCommand(args []string) {
 	}
 }
 
+func parseRecipeFile(fileName string) (*Recipe, error) {
+	contentBytes, readError := ioutil.ReadFile(fileName)
+	if readError != nil {
+		return nil, errors.New("Error reading file")
+	}
+	content := string(contentBytes)
+	recipe, parseError := Parse(content)
+	if parseError != nil {
+		return nil, errors.New("Error parsing recipe")
+	}
+	return recipe, nil
+}
+
 func htmlCommand(args []string) {
 	if len(args) < 1 {
 		fmt.Println("File name required")
 		os.Exit(1)
 	}
+
 	fileName := args[0]
-	contentBytes, readError := ioutil.ReadFile(fileName)
-	if readError != nil {
-		fmt.Println("Error reading file")
-		os.Exit(1)
-	}
-	content := string(contentBytes)
-	recipe, parseError := Parse(content)
-	if parseError != nil {
-		fmt.Println("Error parsing recipe")
+	recipe, err := parseRecipeFile(fileName)
+	if err != nil {
+		fmt.Printf("%s\n", err)
 		os.Exit(1)
 	}
 
