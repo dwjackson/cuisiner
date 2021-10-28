@@ -158,6 +158,18 @@ func TestIngredientWithFractionalQuantityAndUnit(t *testing.T) {
 	assertStrEqual(t, "tsp", sugar.Quantity.Unit)
 }
 
+func TestIngredientWithFractionalQuantityLessThanOneAndUnit(t *testing.T) {
+	input := "Add @salt{0.5%tsp} to the bowl"
+	recipe, err := Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed")
+	}
+	salt := recipe.Ingredients[0]
+	assertStrEqual(t, "salt", salt.Name)
+	assertQuantityEqual(t, 0.5, salt.Quantity.Amount)
+	assertStrEqual(t, "tsp", salt.Quantity.Unit)
+}
+
 func TestSkipComment(t *testing.T) {
 	input := "Add @sugar to bowl // add some sugar"
 	recipe, _ := Parse(input)
