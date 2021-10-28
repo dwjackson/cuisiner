@@ -11,12 +11,12 @@ func Parse(input string) (*Recipe, error) {
 	var directions []string
 	lines := strings.Split(input, "\n")
 	for _, line := range lines {
-		trimmedLine := strings.TrimSpace(line)
+		trimmedLine := removeComments(line)
 		if len(trimmedLine) == 0 {
 			// Skip empty lines
 			continue
 		}
-		lineIngredients, parsedLine := discoverIngredients(line)
+		lineIngredients, parsedLine := discoverIngredients(trimmedLine)
 		for _, ingredient := range lineIngredients {
 			ingredients = append(ingredients, ingredient)
 		}
@@ -69,4 +69,10 @@ func discoverIngredients(line string) ([]Ingredient, string) {
 	line = reNoQuantity.ReplaceAllString(line, "$1")
 
 	return ingredients, line
+}
+
+func removeComments(line string) string {
+	commentRegex := regexp.MustCompile("//.*")
+	commentsRemoved := commentRegex.ReplaceAllString(line, "")
+	return strings.TrimSpace(commentsRemoved)
 }

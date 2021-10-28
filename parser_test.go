@@ -127,6 +127,13 @@ func TestIngredientWithFractionalQuantityAndUnit(t *testing.T) {
 	assertStrEqual(t, "tsp", sugar.Unit)
 }
 
+func TestSkipComment(t *testing.T) {
+	input := "Add @sugar to bowl // add some sugar"
+	recipe, _ := Parse(input)
+	direction := recipe.Directions[0]
+	assertStrEqual(t, "Add sugar to bowl", direction)
+}
+
 func assertStrEqual(t *testing.T, expected string, actual string) {
 	if actual != expected {
 		t.Fatalf("Expected %q, got %q", expected, actual)
