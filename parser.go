@@ -71,7 +71,7 @@ func discoverIngredients(line string) ([]Ingredient, string) {
 
 	line = reQuantity.ReplaceAllString(line, "$1")
 
-	reNoQuantity := regexp.MustCompile(`\@(\w+)`)
+	reNoQuantity := regexp.MustCompile(`\@(\pL+)`)
 	for _, m := range reNoQuantity.FindAllString(line, -1) {
 		name := m[1:]
 		ingredient := Ingredient{

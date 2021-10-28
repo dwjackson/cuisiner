@@ -43,6 +43,19 @@ func TestIngredientWithoutQuantity(t *testing.T) {
 	assertStrEqual(t, "potato", recipe.Ingredients[0].Name)
 }
 
+func TestIngredientWithoutQuantityWithUnicodeInName(t *testing.T) {
+	input := "Add the @gruyère"
+	recipe, err := Parse(input)
+	if err != nil || len(recipe.Directions) != 1 {
+		t.Fatalf("Expected 1 direction")
+	}
+	if len(recipe.Ingredients) != 1 {
+		t.Fatalf("Expected 1 ingredient")
+	}
+	assertStrEqual(t, "gruyère", recipe.Ingredients[0].Name)
+	assertStrEqual(t, "Add the gruyère", recipe.Directions[0])
+}
+
 func TestTwoIngredientsWithoutQuantity(t *testing.T) {
 	input := "Chop up a @potato and a @leek and set aside"
 	recipe, err := Parse(input)
