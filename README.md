@@ -19,15 +19,7 @@ $ cuisiner [COMMAND] [ARGS...]
 $ cuisiner print [RECIPE_FILE]
 ```
 
-Output is printed to `stdout`.
-
-### Format a Recipe as HTML
-
-```sh
-$ cuisiner html [RECIPE_FILE]
-```
-
-Output is printed to `stdout`.
+Output is printed to `stdout` and is in markdown.
 
 ### Print a Shopping List
 
@@ -41,6 +33,8 @@ recipe2.cook
 recipe3.cook
 ^D
 ```
+
+The output is printed to `stdout` as is in markdown.
 
 ## License
 
