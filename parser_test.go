@@ -68,7 +68,7 @@ func TestIngredientWithQuantity(t *testing.T) {
 	} else {
 		ingredient := recipe.Ingredients[0]
 		assertStrEqual(t, "potatos", ingredient.Name)
-		assertIntEqual(t, 2, ingredient.Quantity)
+		assertQuantityEqual(t, 2, ingredient.Quantity)
 	}
 }
 
@@ -83,11 +83,11 @@ func TestIngredientsWithAndWithoutQuantity(t *testing.T) {
 	} else {
 		potato := recipe.Ingredients[0]
 		assertStrEqual(t, "potatos", potato.Name)
-		assertIntEqual(t, 2, potato.Quantity)
+		assertQuantityEqual(t, 2, potato.Quantity)
 
 		leek := recipe.Ingredients[1]
 		assertStrEqual(t, "leek", leek.Name)
-		assertIntEqual(t, 1, leek.Quantity)
+		assertQuantityEqual(t, 1, leek.Quantity)
 	}
 	direction := recipe.Directions[0]
 	assertStrEqual(t, "Chop up potatos and leek and set aside", direction)
@@ -105,17 +105,27 @@ func TestIngredientsWithQuantityAndUnit(t *testing.T) {
 	} else {
 		water := recipe.Ingredients[0]
 		assertStrEqual(t, "water", water.Name)
-		assertIntEqual(t, 300, water.Quantity)
+		assertQuantityEqual(t, 300, water.Quantity)
 		assertStrEqual(t, "mL", water.Unit)
 
 		flour := recipe.Ingredients[1]
 		assertStrEqual(t, "flour", flour.Name)
-		assertIntEqual(t, 400, flour.Quantity)
+		assertQuantityEqual(t, 400, flour.Quantity)
 		assertStrEqual(t, "g", flour.Unit)
 	}
 }
 
-// TODO: Test decimal quantities
+func TestIngredientWithFractionalQuantityAndUnit(t *testing.T) {
+	input := "Add @sugar{2.5%tsp} to the bowl"
+	recipe, err := Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed")
+	}
+	sugar := recipe.Ingredients[0]
+	assertStrEqual(t, "sugar", sugar.Name)
+	assertQuantityEqual(t, 2.5, sugar.Quantity)
+	assertStrEqual(t, "tsp", sugar.Unit)
+}
 
 func assertStrEqual(t *testing.T, expected string, actual string) {
 	if actual != expected {
@@ -126,5 +136,11 @@ func assertStrEqual(t *testing.T, expected string, actual string) {
 func assertIntEqual(t *testing.T, expected int, actual int) {
 	if actual != expected {
 		t.Fatalf("Expected %d, got %d", expected, actual)
+	}
+}
+
+func assertQuantityEqual(t *testing.T, expected QuantityAmount, actual QuantityAmount) {
+	if actual != expected {
+		t.Fatalf("Expected %f, got %f", expected, actual)
 	}
 }

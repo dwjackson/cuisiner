@@ -1,9 +1,11 @@
 package cuisiner
 
+type QuantityAmount float64
+
 type Ingredient struct {
 	Name     string
-	Quantity int
-	Unit string
+	Quantity QuantityAmount
+	Unit     string
 }
 
 type Recipe struct {

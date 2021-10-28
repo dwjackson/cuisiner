@@ -32,10 +32,10 @@ func Parse(input string) (*Recipe, error) {
 func discoverIngredients(line string) ([]Ingredient, string) {
 	var ingredients []Ingredient
 
-	reQuantity := regexp.MustCompile(`\@([^\@]+)\{(\d+)(\%[^\}]+)?\}`)
+	reQuantity := regexp.MustCompile(`\@([^\@]+)\{(\d+\.?\d*)(\%[^\}]+)?\}`)
 	for _, m := range reQuantity.FindAllStringSubmatch(line, -1) {
 		name := m[1]
-		quantity64, err := strconv.ParseInt(m[2], 10, 32)
+		quantity, err := strconv.ParseFloat(m[2], 64)
 		unitPart := m[3]
 		var unit string
 		if len(unitPart) > 0 {
@@ -46,11 +46,10 @@ func discoverIngredients(line string) ([]Ingredient, string) {
 		if err != nil {
 			panic("Bad quantity") // TODO: Do not panic
 		}
-		quantity := int(quantity64)
 		ingredient := Ingredient{
 			Name:     name,
-			Quantity: quantity,
-			Unit: unit,
+			Quantity: QuantityAmount(quantity),
+			Unit:     unit,
 		}
 		ingredients = append(ingredients, ingredient)
 	}
@@ -60,10 +59,9 @@ func discoverIngredients(line string) ([]Ingredient, string) {
 	reNoQuantity := regexp.MustCompile(`\@(\w+)`)
 	for _, m := range reNoQuantity.FindAllString(line, -1) {
 		name := m[1:]
-		quantity := 1
 		ingredient := Ingredient{
 			Name:     name,
-			Quantity: quantity,
+			Quantity: QuantityAmount(1),
 		}
 		ingredients = append(ingredients, ingredient)
 	}
