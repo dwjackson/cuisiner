@@ -6,17 +6,6 @@ import (
 	"strings"
 )
 
-type Ingredient struct {
-	Name     string
-	Quantity int
-	Unit string
-}
-
-type Recipe struct {
-	Ingredients []Ingredient
-	Directions  []string
-}
-
 func Parse(input string) (*Recipe, error) {
 	var ingredients []Ingredient
 	var directions []string
