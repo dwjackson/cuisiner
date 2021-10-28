@@ -19,4 +19,4 @@ $ cuisiner print [RECIPE_FILE]
 
 ## License
 
-TODO
+This project is licensed under the MIT License.
