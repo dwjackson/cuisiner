@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -18,10 +19,12 @@ func main() {
 	}
 	commandName := os.Args[1]
 	switch commandName {
-	case "print":
-		printCommand(os.Args[2:])
 	case "html":
 		htmlCommand(os.Args[2:])
+	case "print":
+		printCommand(os.Args[2:])
+	case "shopping":
+		shoppingCommand()
 	default:
 		fmt.Printf("Invalid command: %s\n", commandName)
 	}
@@ -117,4 +120,30 @@ func htmlCommand(args []string) {
 	fmt.Println("    </ol>")
 	fmt.Println("  </body>")
 	fmt.Println("</html>")
+}
+
+func shoppingCommand() {
+	var recipes []Recipe
+	reader := bufio.NewReader(os.Stdin)
+	fileName, err := reader.ReadString('\n')
+	for err == nil {
+		fileName = strings.TrimSpace(fileName)
+		if len(fileName) > 0 {
+			recipe, err := parseRecipeFile(fileName)
+			if err != nil {
+				fmt.Printf("%s\n", err)
+				os.Exit(1)
+			}
+			recipes = append(recipes, *recipe)
+		}
+		fileName, err = reader.ReadString('\n')
+	}
+
+	list := ShoppingList(recipes)
+
+	fmt.Println("Shopping List")
+	fmt.Println("")
+	for _, item := range list {
+		fmt.Printf("* %s\n", item)
+	}
 }
