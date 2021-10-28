@@ -2,11 +2,13 @@ package cuisiner
 
 import (
 	"regexp"
+	"strconv"
 	"strings"
 )
 
 type Ingredient struct {
-	Name string
+	Name     string
+	Quantity int
 }
 
 type Recipe struct {
@@ -22,10 +24,7 @@ func Parse(input string) (*Recipe, error) {
 		trimmedLine := strings.TrimSpace(line)
 		if len(trimmedLine) > 0 {
 			lineIngredients := discoverIngredients(line)
-			for _, ingredientName := range lineIngredients {
-				ingredient := Ingredient{
-					Name: ingredientName,
-				}
+			for _, ingredient := range lineIngredients {
 				ingredients = append(ingredients, ingredient)
 			}
 			directions = append(directions, line)
@@ -38,13 +37,36 @@ func Parse(input string) (*Recipe, error) {
 	return recipe, nil
 }
 
-func discoverIngredients(line string) []string {
-	var ingredients []string
-	re := regexp.MustCompile(`\@\w+`)
-	matches := re.FindAllString(line, -1)
-	for _, m := range matches {
-		name := m[1:]
-		ingredients = append(ingredients, name)
+func discoverIngredients(line string) []Ingredient {
+	var ingredients []Ingredient
+
+	reQuantity := regexp.MustCompile(`\@([^\@]+)\{(.+)\}`)
+	for _, m := range reQuantity.FindAllStringSubmatch(line, -1) {
+		name := m[1]
+		quantity64, err := strconv.ParseInt(m[2], 10, 32)
+		if err != nil {
+			panic("Bad quantity") // TODO: Do not panic
+		}
+		quantity := int(quantity64)
+		ingredient := Ingredient{
+			Name:     name,
+			Quantity: quantity,
+		}
+		ingredients = append(ingredients, ingredient)
 	}
+
+	line = reQuantity.ReplaceAllString(line, "$1")
+
+	reNoQuantity := regexp.MustCompile(`\@\w+`)
+	for _, m := range reNoQuantity.FindAllString(line, -1) {
+		name := m[1:]
+		quantity := 1
+		ingredient := Ingredient{
+			Name:     name,
+			Quantity: quantity,
+		}
+		ingredients = append(ingredients, ingredient)
+	}
+
 	return ingredients
 }
