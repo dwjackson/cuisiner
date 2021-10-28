@@ -10,17 +10,23 @@ func TestShoppingList(t *testing.T) {
 			Ingredients: []Ingredient{
 				Ingredient{
 					Name: "Penne Rigate",
-					Quantity: 1,
-					Unit: "Box",
+					Quantity: Quantity{
+						Amount: 1,
+						Unit:   "Box",
+					},
 				},
 				Ingredient{
 					Name: "Canned Tomatoes",
-					Quantity: 1,
-					Unit: "Can",
+					Quantity: Quantity{
+						Amount: 1,
+						Unit:   "Can",
+					},
 				},
 				Ingredient{
 					Name: "Onion",
-					Quantity: 1,
+					Quantity: Quantity{
+						Amount: 1,
+					},
 				},
 			},
 		},
@@ -28,11 +34,15 @@ func TestShoppingList(t *testing.T) {
 			Ingredients: []Ingredient{
 				Ingredient{
 					Name: "Liver",
-					Quantity: 1,
+					Quantity: Quantity{
+						Amount: 1,
+					},
 				},
 				Ingredient{
 					Name: "Onion",
-					Quantity: 1,
+					Quantity: Quantity{
+						Amount: 1,
+					},
 				},
 			},
 		},
@@ -43,5 +53,6 @@ func TestShoppingList(t *testing.T) {
 	if len(list) != correctCount {
 		t.Fatalf("Expected %d items, got %d", correctCount, len(list))
 	}
-	// TODO
+	assertStrEqual(t, "1 Box Penne Rigate", list[0])
+	assertStrEqual(t, "2 Onion", list[2])
 }
