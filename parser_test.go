@@ -57,6 +57,24 @@ func TestTwoIngredientsWithoutQuantity(t *testing.T) {
 	}
 }
 
+func TestIngredientWithSpaceInName(t *testing.T) {
+	input := "Put the @crème fraîche{} into the bowl"
+	recipe, err := Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed")
+	}
+	if len(recipe.Ingredients) != 1 {
+		t.Fatalf("Expected 1 ingredient")
+	} else {
+		ingredient := recipe.Ingredients[0]
+		assertStrEqual(t, "crème fraîche", ingredient.Name)
+		assertQuantityEqual(t, 1, ingredient.Quantity)
+
+		direction := recipe.Directions[0]
+		assertStrEqual(t, "Put the crème fraîche into the bowl", direction)
+	}
+}
+
 func TestIngredientWithQuantity(t *testing.T) {
 	input := "Chop up @potatos{2} and set aside"
 	recipe, err := Parse(input)

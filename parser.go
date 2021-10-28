@@ -38,20 +38,29 @@ func Parse(input string) (*Recipe, error) {
 func discoverIngredients(line string) ([]Ingredient, string) {
 	var ingredients []Ingredient
 
-	reQuantity := regexp.MustCompile(`\@([^\@]+)\{(\d+\.?\d*)(\%[^\}]+)?\}`)
+	reQuantity := regexp.MustCompile(`\@([^\{\@]+)\{((\d+\.?\d*)(\%[^\}]+)?)?\}`)
 	for _, m := range reQuantity.FindAllStringSubmatch(line, -1) {
 		name := m[1]
-		quantity, err := strconv.ParseFloat(m[2], 64)
-		unitPart := m[3]
+
+		var quantity float64
+		if m[3] != "" {
+			var err error
+			quantity, err = strconv.ParseFloat(m[3], 64)
+			if err != nil {
+				panic("Bad quantity") // TODO: Do not panic
+			}
+		} else {
+			quantity = 1
+		}
+
+		unitPart := m[4]
 		var unit string
 		if len(unitPart) > 0 {
 			unit = unitPart[1:]
 		} else {
 			unit = ""
 		}
-		if err != nil {
-			panic("Bad quantity") // TODO: Do not panic
-		}
+
 		ingredient := Ingredient{
 			Name:     name,
 			Quantity: QuantityAmount(quantity),
