@@ -18,14 +18,23 @@ func Parse(input string) (*Recipe, error) {
 			// Skip empty lines
 			continue
 		}
-		lineIngredients, parsedLine := discoverIngredients(trimmedLine)
+
+		lineIngredients, parsedLine, ingredientsError := discoverIngredients(trimmedLine)
+		if ingredientsError != nil {
+			return nil, ingredientsError
+		}
 		for _, ingredient := range lineIngredients {
 			ingredients = append(ingredients, ingredient)
 		}
-		lineTimers, parsedLine := discoverTimers(parsedLine)
+
+		lineTimers, parsedLine, timerError := discoverTimers(parsedLine)
+		if timerError != nil {
+			return nil, timerError
+		}
 		for _, timer := range lineTimers {
 			timers = append(timers, timer)
 		}
+
 		lineCookware, parsedLine := discoverCookware(parsedLine)
 		for _, item := range lineCookware {
 			cookware = append(cookware, item)
@@ -41,7 +50,7 @@ func Parse(input string) (*Recipe, error) {
 	return recipe, nil
 }
 
-func discoverIngredients(line string) ([]Ingredient, string) {
+func discoverIngredients(line string) ([]Ingredient, string, error) {
 	var ingredients []Ingredient
 
 	reQuantity := regexp.MustCompile(`\@([^\{\@#]+)\{((\d+\.?\d*)(\%[^\}]+)?)?\}`)
@@ -53,7 +62,7 @@ func discoverIngredients(line string) ([]Ingredient, string) {
 			var err error
 			quantity, err = strconv.ParseFloat(m[3], 64)
 			if err != nil {
-				panic("Bad quantity") // TODO: Do not panic
+				return nil, "", err
 			}
 		} else {
 			quantity = 1
@@ -89,7 +98,7 @@ func discoverIngredients(line string) ([]Ingredient, string) {
 
 	line = reNoQuantity.ReplaceAllString(line, "$1")
 
-	return ingredients, line
+	return ingredients, line, nil
 }
 
 func removeComments(line string) string {
@@ -98,13 +107,13 @@ func removeComments(line string) string {
 	return strings.TrimSpace(commentsRemoved)
 }
 
-func discoverTimers(line string) ([]Timer, string) {
+func discoverTimers(line string) ([]Timer, string, error) {
 	var timers []Timer
 	timerRegex := regexp.MustCompile(`~\{(\d+\.?\d*)%([^\}]+)\}`)
 	for _, m := range timerRegex.FindAllStringSubmatch(line, -1) {
 		duration, err := strconv.ParseFloat(m[1], 64)
 		if err != nil {
-			panic("Bad duration") // TODO: Do not panic
+			return nil, "", err
 		}
 		unit := m[2]
 		timer := Timer{
@@ -114,7 +123,7 @@ func discoverTimers(line string) ([]Timer, string) {
 		timers = append(timers, timer)
 	}
 	parsedLine := timerRegex.ReplaceAllString(line, "$1 $2")
-	return timers, parsedLine
+	return timers, parsedLine, nil
 }
 
 func discoverCookware(line string) ([]string, string) {
