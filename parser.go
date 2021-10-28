@@ -9,6 +9,7 @@ import (
 type Ingredient struct {
 	Name     string
 	Quantity int
+	Unit string
 }
 
 type Recipe struct {
@@ -42,10 +43,17 @@ func Parse(input string) (*Recipe, error) {
 func discoverIngredients(line string) ([]Ingredient, string) {
 	var ingredients []Ingredient
 
-	reQuantity := regexp.MustCompile(`\@([^\@]+)\{(.+)\}`)
+	reQuantity := regexp.MustCompile(`\@([^\@]+)\{(\d+)(\%[^\}]+)?\}`)
 	for _, m := range reQuantity.FindAllStringSubmatch(line, -1) {
 		name := m[1]
 		quantity64, err := strconv.ParseInt(m[2], 10, 32)
+		unitPart := m[3]
+		var unit string
+		if len(unitPart) > 0 {
+			unit = unitPart[1:]
+		} else {
+			unit = ""
+		}
 		if err != nil {
 			panic("Bad quantity") // TODO: Do not panic
 		}
@@ -53,6 +61,7 @@ func discoverIngredients(line string) ([]Ingredient, string) {
 		ingredient := Ingredient{
 			Name:     name,
 			Quantity: quantity,
+			Unit: unit,
 		}
 		ingredients = append(ingredients, ingredient)
 	}

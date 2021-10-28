@@ -93,6 +93,30 @@ func TestIngredientsWithAndWithoutQuantity(t *testing.T) {
 	assertStrEqual(t, "Chop up potatos and leek and set aside", direction)
 }
 
+func TestIngredientsWithQuantityAndUnit(t *testing.T) {
+	input := "Mix @water{300%mL} and @flour{400%g} in a bowl"
+	recipe, err := Parse(input)
+	if err != nil {
+		t.Fatalf("Parse failed")
+	}
+	ingredientCount := len(recipe.Ingredients)
+	if ingredientCount != 2 {
+		t.Fatalf("Expected 2 ingredients, got %d", ingredientCount)
+	} else {
+		water := recipe.Ingredients[0]
+		assertStrEqual(t, "water", water.Name)
+		assertIntEqual(t, 300, water.Quantity)
+		assertStrEqual(t, "mL", water.Unit)
+
+		flour := recipe.Ingredients[1]
+		assertStrEqual(t, "flour", flour.Name)
+		assertIntEqual(t, 400, flour.Quantity)
+		assertStrEqual(t, "g", flour.Unit)
+	}
+}
+
+// TODO: Test decimal quantities
+
 func assertStrEqual(t *testing.T, expected string, actual string) {
 	if actual != expected {
 		t.Fatalf("Expected %q, got %q", expected, actual)
