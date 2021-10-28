@@ -40,7 +40,7 @@ func TestIngredientWithoutQuantity(t *testing.T) {
 	if len(recipe.Ingredients) != 1 {
 		t.Fatalf("Expected 1 ingredient")
 	}
-	assertEqual(t, "potato", recipe.Ingredients[0])
+	assertEqual(t, "potato", recipe.Ingredients[0].Name)
 }
 
 func TestTwoIngredientsWithoutQuantity(t *testing.T) {
@@ -52,8 +52,8 @@ func TestTwoIngredientsWithoutQuantity(t *testing.T) {
 	if len(recipe.Ingredients) != 2 {
 		t.Fatalf("Expected 2 ingredients")
 	} else {
-		assertEqual(t, "potato", recipe.Ingredients[0])
-		assertEqual(t, "leek", recipe.Ingredients[1])
+		assertEqual(t, "potato", recipe.Ingredients[0].Name)
+		assertEqual(t, "leek", recipe.Ingredients[1].Name)
 	}
 }
 

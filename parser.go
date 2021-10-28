@@ -5,20 +5,27 @@ import (
 	"strings"
 )
 
+type Ingredient struct {
+	Name string
+}
+
 type Recipe struct {
-	Ingredients []string
+	Ingredients []Ingredient
 	Directions  []string
 }
 
 func Parse(input string) (*Recipe, error) {
-	var ingredients []string
+	var ingredients []Ingredient
 	var directions []string
 	lines := strings.Split(input, "\n")
 	for _, line := range lines {
 		trimmedLine := strings.TrimSpace(line)
 		if len(trimmedLine) > 0 {
 			lineIngredients := discoverIngredients(line)
-			for _, ingredient := range lineIngredients {
+			for _, ingredientName := range lineIngredients {
+				ingredient := Ingredient{
+					Name: ingredientName,
+				}
 				ingredients = append(ingredients, ingredient)
 			}
 			directions = append(directions, line)
