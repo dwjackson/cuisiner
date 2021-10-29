@@ -21,6 +21,25 @@ func TestAddTimersWithSameUnit(t *testing.T) {
 	testTimer(t, &expected, &result)
 }
 
+func TestAddTimersWithDifferentUnits(t *testing.T) {
+	t1 := Timer{
+		Duration: 30,
+		Unit:     "minutes",
+	}
+
+	t2 := Timer{
+		Duration: 1,
+		Unit:     "hour",
+	}
+
+	result := t1.Add(&t2)
+	expected := Timer{
+		Duration: 90,
+		Unit:     "minutes",
+	}
+	testTimer(t, &expected, &result)
+}
+
 func testTimer(t *testing.T, expected *Timer, actual *Timer) {
 	if actual.Duration != expected.Duration {
 		t.Fatalf("Expected %f, got %f", expected.Duration, actual.Duration)

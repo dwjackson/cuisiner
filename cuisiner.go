@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"math"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -60,6 +61,30 @@ func printCommand(args []string) {
 			fmt.Printf("* %s\n", item)
 		}
 		fmt.Println("")
+	}
+
+	if len(recipe.Timers) > 0 {
+		fmt.Println("## Total Time")
+		total := recipe.Timers[0]
+		for i, timer := range recipe.Timers {
+			if i == 0 {
+				// Skip the first
+				continue
+			}
+			total = total.Add(&timer)
+		}
+		isInteger := math.Floor(total.Duration) == total.Duration
+		var duration string
+		if isInteger {
+			duration = strconv.Itoa(int(total.Duration))
+		} else {
+			duration = fmt.Sprintf("%f", total.Duration)
+			duration = strings.Trim(duration, "0")
+			if duration[0] == '.' {
+				duration = "0" + duration
+			}
+		}
+		fmt.Printf("\n%s %s\n\n", duration, total.Unit)
 	}
 
 	fmt.Println("## Directions")
