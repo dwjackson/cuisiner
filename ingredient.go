@@ -19,12 +19,28 @@ type Ingredient struct {
 	Quantity Quantity
 }
 
+var knownFractions = map[float64]string{
+	0.125: "⅛",
+	0.25:  "¼",
+	0.5:   "½",
+	0.75:  "¾",
+}
+
 func (i *Ingredient) FormatAmount() string {
 	amount := float64(i.Quantity.Amount)
 
 	isInteger := math.Floor(amount) == amount
 	if isInteger {
 		return strconv.Itoa(int(amount))
+	}
+
+	wholePart := math.Floor(amount)
+	fractionPart := amount - wholePart
+	if fraction, isFraction := knownFractions[fractionPart]; isFraction {
+		if wholePart > 0 {
+			return fmt.Sprintf("%d %s", int(wholePart), fraction)
+		}
+		return fraction
 	}
 
 	amountString := fmt.Sprintf("%5.5f", amount)
