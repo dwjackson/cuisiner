@@ -40,6 +40,15 @@ func TestAddTimersWithDifferentUnits(t *testing.T) {
 	testTimer(t, &expected, &result)
 }
 
+func TestTStringForMoreThanOneHour(t *testing.T) {
+	timer := Timer{
+		duration: 90,
+		Unit:     "minutes",
+	}
+	s := timer.ToString()
+	assertStrEqual(t, "1 hour, 30 minutes", s)
+}
+
 func testTimer(t *testing.T, expected *Timer, actual *Timer) {
 	if actual.duration != expected.duration {
 		t.Fatalf("Expected %f, dot %f", expected.duration, actual.duration)

@@ -76,8 +76,7 @@ func printCommand(args []string) {
 			}
 			total = total.Add(&timer)
 		}
-		duration := total.DurationString()
-		fmt.Printf("\n%s %s\n\n", duration, total.Unit)
+		fmt.Printf("\n%s\n\n", total.ToString())
 	}
 
 	fmt.Println("## Directions")
