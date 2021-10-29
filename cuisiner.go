@@ -13,19 +13,23 @@ import (
 
 const USAGE string = "USAGE: cuisiner [COMMAND] [ARGS...]"
 
+type Command = func([]string)
+
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Println(USAGE)
 		os.Exit(1)
 	}
 	commandName := os.Args[1]
-	switch commandName {
-	case "print":
-		printCommand(os.Args[2:])
-	case "shopping":
-		shoppingCommand(os.Args[1:])
-	default:
+	commands := map[string]Command{
+		"print":    printCommand,
+		"shopping": shoppingCommand,
+	}
+	if command, commandExists := commands[commandName]; commandExists {
+		command(os.Args[2:])
+	} else {
 		fmt.Printf("Invalid command: %s\n", commandName)
+		os.Exit(1)
 	}
 }
 
