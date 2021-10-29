@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"math"
 	"os"
 	"strings"
 )
@@ -155,30 +154,16 @@ func shoppingCommand(args []string) {
 }
 
 func createIngredientLine(ingredient *Ingredient) string {
-	amount := float64(ingredient.Quantity.Amount)
-	isInteger := math.Floor(amount) == amount
 	name := ingredient.Name
 	unit := ingredient.Quantity.Unit
-
-	if isInteger {
-		amountInt := int(amount)
-		if unit != "" {
-			return fmt.Sprintf("%d %s %s", amountInt, unit, name)
-		}
-		if amount != 1 {
-			return fmt.Sprintf("%d %s", amountInt, name)
-		}
-		return fmt.Sprintf("%s", name)
-	}
-
-	amountStr := fmt.Sprintf("%.5f", ingredient.Quantity.Amount)
-	amountStr = strings.Trim(amountStr, "0")
-	if amountStr[0] == '.' {
-		amountStr = "0" + amountStr
-	}
+	amountStr := ingredient.FormatAmount()
 
 	if unit != "" {
 		return fmt.Sprintf("%s %s %s", amountStr, unit, name)
+	}
+
+	if amountStr == "1" {
+		return name
 	}
 
 	return fmt.Sprintf("%s %s", amountStr, name)
