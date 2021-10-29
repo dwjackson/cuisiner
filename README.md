@@ -16,8 +16,12 @@ $ cuisiner [COMMAND] [ARGS...]
 ### Print a Recipe
 
 ```sh
-$ cuisiner print [RECIPE_FILE]
+$ cuisiner print [RECIPE_FILE] [...PANTRY_FILE]
 ```
+
+If a "pantry" file is specified then those ingredients are removed from the
+list, on the assumption that they needn't be bought. The pantry file is in
+recipe format without any real directions.
 
 Output is printed to `stdout` and is in markdown.
 
