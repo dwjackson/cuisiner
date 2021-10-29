@@ -105,7 +105,7 @@ func parseRecipeFile(fileName string) (*Recipe, error) {
 	}
 	recipe, parseError := Parse(content)
 	if parseError != nil {
-		return nil, errors.New("Error parsing recipe")
+		return nil, parseError
 	}
 	return recipe, nil
 }
