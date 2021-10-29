@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"regexp"
 	"strconv"
 	"strings"
@@ -27,7 +28,7 @@ func Parse(input string) (*Recipe, error) {
 			ingredients = append(ingredients, ingredient)
 		}
 
-		lineTimers, parsedLine, timerError := discoverTimers(parsedLine)
+		lineTimers, parsedLine, timerError := parseTimers(parsedLine)
 		if timerError != nil {
 			return nil, timerError
 		}
@@ -35,7 +36,7 @@ func Parse(input string) (*Recipe, error) {
 			timers = append(timers, timer)
 		}
 
-		lineCookware, parsedLine := discoverCookware(parsedLine)
+		lineCookware, parsedLine := parseCookware(parsedLine)
 		for _, item := range lineCookware {
 			cookware = append(cookware, item)
 		}
@@ -111,7 +112,20 @@ func removeComments(line string) string {
 	return strings.TrimSpace(commentsRemoved)
 }
 
-func discoverTimers(line string) ([]Timer, string, error) {
+var validUnits = map[string]bool{
+	"sec":     true,
+	"secs":    true,
+	"second":  true,
+	"seconds": true,
+	"min":     true,
+	"mins":    true,
+	"minute":  true,
+	"minutes": true,
+	"hour":    true,
+	"hours":   true,
+}
+
+func parseTimers(line string) ([]Timer, string, error) {
 	var timers []Timer
 	timerRegex := regexp.MustCompile(`~\{(\d+\.?\d*)%([^\}]+)\}`)
 	for _, m := range timerRegex.FindAllStringSubmatch(line, -1) {
@@ -120,6 +134,9 @@ func discoverTimers(line string) ([]Timer, string, error) {
 			return nil, "", err
 		}
 		unit := m[2]
+		if _, unitIsValid := validUnits[unit]; !unitIsValid {
+			return nil, "", errors.New("Invalid unit: " + unit)
+		}
 		timer := Timer{
 			Duration: duration,
 			Unit:     unit,
@@ -130,7 +147,7 @@ func discoverTimers(line string) ([]Timer, string, error) {
 	return timers, parsedLine, nil
 }
 
-func discoverCookware(line string) ([]string, string) {
+func parseCookware(line string) ([]string, string) {
 	var cookware []string
 	cookwareSpacesRegex := regexp.MustCompile(`#([^\{]+)\{\}`)
 	for _, m := range cookwareSpacesRegex.FindAllStringSubmatch(line, -1) {
