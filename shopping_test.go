@@ -87,8 +87,8 @@ func TestShoppingListWithPantry(t *testing.T) {
 		},
 	}
 
-	pantry := Recipe{
-		Ingredients: []Ingredient{
+	pantry := Pantry{
+		ingredients: []Ingredient{
 			Ingredient{
 				Name: "Onion",
 				Quantity: Quantity{

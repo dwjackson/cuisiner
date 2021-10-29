@@ -1,22 +1,14 @@
 package main
 
-type QuantityAmount float64
-
-type Quantity struct {
-	Amount QuantityAmount
-	Unit   string
-}
-
-type Ingredient struct {
-	Name     string
-	Quantity Quantity
-}
-
 type Recipe struct {
 	Ingredients []Ingredient
 	Directions  []string
 	Timers      []Timer
 	Cookware    []string
+}
+
+func (r *Recipe) IngredientsList() []Ingredient {
+	return r.Ingredients
 }
 
 type Timer struct {

@@ -2,12 +2,20 @@ package main
 
 import "strconv"
 
-func ShoppingList(recipes []Recipe, pantry *Recipe) []string {
+type Pantry struct {
+	ingredients []Ingredient
+}
+
+func (p *Pantry) IngredientsList() []Ingredient {
+	return p.ingredients
+}
+
+func ShoppingList(recipes []Recipe, pantry *Pantry) []string {
 	var itemOrder []string
 	itemQuantities := make(map[string]float64)
 
 	for _, recipe := range recipes {
-		for _, ingredient := range recipe.Ingredients {
+		for _, ingredient := range recipe.IngredientsList() {
 			item := itemName(&ingredient)
 			if _, exists := itemQuantities[item]; !exists {
 				itemQuantities[item] = 0.0
@@ -18,7 +26,7 @@ func ShoppingList(recipes []Recipe, pantry *Recipe) []string {
 	}
 
 	if pantry != nil {
-		for _, ingredient := range pantry.Ingredients {
+		for _, ingredient := range pantry.IngredientsList() {
 			item := itemName(&ingredient)
 			if _, exists := itemQuantities[item]; exists {
 				amount := float64(ingredient.Quantity.Amount)

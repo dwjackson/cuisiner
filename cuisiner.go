@@ -47,7 +47,7 @@ func printCommand(args []string) {
 
 	fmt.Println("## Ingredients")
 	fmt.Println("")
-	for _, ingredient := range recipe.Ingredients {
+	for _, ingredient := range recipe.IngredientsList() {
 		ingredientLine := createIngredientLine(&ingredient)
 		fmt.Printf("* %s\n", ingredientLine)
 	}
@@ -61,16 +61,24 @@ func printCommand(args []string) {
 }
 
 func parseRecipeFile(fileName string) (*Recipe, error) {
-	contentBytes, readError := ioutil.ReadFile(fileName)
+	content, readError := readFileToString(fileName)
 	if readError != nil {
-		return nil, errors.New("Error reading file")
+		return nil, readError
 	}
-	content := string(contentBytes)
 	recipe, parseError := Parse(content)
 	if parseError != nil {
 		return nil, errors.New("Error parsing recipe")
 	}
 	return recipe, nil
+}
+
+func readFileToString(fileName string) (string, error) {
+	contentBytes, readError := ioutil.ReadFile(fileName)
+	if readError != nil {
+		return "", errors.New("Error reading file")
+	}
+	content := string(contentBytes)
+	return content, nil
 }
 
 func recipeTitleFromFileName(fileName string) string {
@@ -84,11 +92,11 @@ func recipeTitleFromFileName(fileName string) string {
 }
 
 func shoppingCommand(args []string) {
-	var pantryRecipe *Recipe
+	var pantry *Pantry
 	if len(args) > 0 {
 		pantryFileName := args[0]
 		var pantryError error
-		pantryRecipe, pantryError = parseRecipeFile(pantryFileName)
+		pantry, pantryError = parsePantryFile(pantryFileName)
 		if pantryError != nil {
 			fmt.Printf("%s\n", pantryError)
 			os.Exit(1)
@@ -111,7 +119,7 @@ func shoppingCommand(args []string) {
 		fileName, err = reader.ReadString('\n')
 	}
 
-	list := ShoppingList(recipes, pantryRecipe)
+	list := ShoppingList(recipes, pantry)
 
 	fmt.Println("# Shopping List")
 	fmt.Println("")
@@ -150,4 +158,25 @@ func createIngredientLine(ingredient *Ingredient) string {
 
 	return fmt.Sprintf("%s %s", amountStr, ingredient.Name)
 
+}
+
+func parsePantryFile(fileName string) (*Pantry, error) {
+	pantryContent, readError := readFileToString(fileName)
+	if readError != nil {
+		return nil, readError
+	}
+	var ingredients []Ingredient
+	for _, line := range strings.Split(pantryContent, "\n") {
+		lineIngredients, _, err := parseIngredients(line)
+		if err != nil || len(lineIngredients) == 0 {
+			continue
+		}
+		for _, ingredient := range lineIngredients {
+			ingredients = append(ingredients, ingredient)
+		}
+	}
+	pantry := &Pantry{
+		ingredients,
+	}
+	return pantry, nil
 }

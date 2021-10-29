@@ -19,7 +19,7 @@ func Parse(input string) (*Recipe, error) {
 			continue
 		}
 
-		lineIngredients, parsedLine, ingredientsError := discoverIngredients(trimmedLine)
+		lineIngredients, parsedLine, ingredientsError := parseIngredients(trimmedLine)
 		if ingredientsError != nil {
 			return nil, ingredientsError
 		}
@@ -50,7 +50,7 @@ func Parse(input string) (*Recipe, error) {
 	return recipe, nil
 }
 
-func discoverIngredients(line string) ([]Ingredient, string, error) {
+func parseIngredients(line string) ([]Ingredient, string, error) {
 	var ingredients []Ingredient
 
 	reQuantity := regexp.MustCompile(`\@([^\{\@#]+)\{((\d+\.?\d*)(\%[^\}]+)?)?\}`)
