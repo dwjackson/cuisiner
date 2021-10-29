@@ -186,7 +186,7 @@ func TestTimer(t *testing.T) {
 	assertIntEqual(t, 1, len(recipe.Timers))
 
 	timer := recipe.Timers[0]
-	assertDurationEqual(t, 15, timer.Duration)
+	assertDurationEqual(t, 15, timer.duration)
 	assertStrEqual(t, "minutes", timer.Unit)
 
 	direction := recipe.Directions[0]

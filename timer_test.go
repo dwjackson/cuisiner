@@ -4,18 +4,18 @@ import "testing"
 
 func TestAddTimersWithSameUnit(t *testing.T) {
 	t1 := Timer{
-		Duration: 30,
+		duration: 30,
 		Unit:     "minutes",
 	}
 
 	t2 := Timer{
-		Duration: 15,
+		duration: 15,
 		Unit:     "minutes",
 	}
 
 	result := t1.Add(&t2)
 	expected := Timer{
-		Duration: 45,
+		duration: 45,
 		Unit:     "minutes",
 	}
 	testTimer(t, &expected, &result)
@@ -23,26 +23,26 @@ func TestAddTimersWithSameUnit(t *testing.T) {
 
 func TestAddTimersWithDifferentUnits(t *testing.T) {
 	t1 := Timer{
-		Duration: 30,
+		duration: 30,
 		Unit:     "minutes",
 	}
 
 	t2 := Timer{
-		Duration: 1,
+		duration: 1,
 		Unit:     "hour",
 	}
 
 	result := t1.Add(&t2)
 	expected := Timer{
-		Duration: 90,
+		duration: 90,
 		Unit:     "minutes",
 	}
 	testTimer(t, &expected, &result)
 }
 
 func testTimer(t *testing.T, expected *Timer, actual *Timer) {
-	if actual.Duration != expected.Duration {
-		t.Fatalf("Expected %f, got %f", expected.Duration, actual.Duration)
+	if actual.duration != expected.duration {
+		t.Fatalf("Expected %f, dot %f", expected.duration, actual.duration)
 	}
 	if actual.Unit != expected.Unit {
 		t.Fatalf("Expected unit to be %s, was %s", expected.Unit, actual.Unit)

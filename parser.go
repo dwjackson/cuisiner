@@ -138,7 +138,7 @@ func parseTimers(line string) ([]Timer, string, error) {
 			return nil, "", errors.New("Invalid unit: " + unit)
 		}
 		timer := Timer{
-			Duration: duration,
+			duration: duration,
 			Unit:     unit,
 		}
 		timers = append(timers, timer)
