@@ -53,6 +53,15 @@ func printCommand(args []string) {
 	}
 	fmt.Println("")
 
+	if len(recipe.Cookware) > 0 {
+		fmt.Println("## Cookware")
+		fmt.Println("")
+		for _, item := range recipe.Cookware {
+			fmt.Printf("* %s\n", item)
+		}
+		fmt.Println("")
+	}
+
 	fmt.Println("## Directions")
 	fmt.Println("")
 	for i, direction := range recipe.Directions {
