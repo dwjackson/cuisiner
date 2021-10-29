@@ -129,21 +129,20 @@ func shoppingCommand(args []string) {
 }
 
 func createIngredientLine(ingredient *Ingredient) string {
-	q := float64(ingredient.Quantity.Amount)
-	isInteger := math.Floor(q) == q
+	amount := float64(ingredient.Quantity.Amount)
+	isInteger := math.Floor(amount) == amount
+	name := ingredient.Name
+	unit := ingredient.Quantity.Unit
 
-	if isInteger && ingredient.Quantity.Unit != "" {
-		qInt := int(q)
-		return fmt.Sprintf("%d %s %s", qInt, ingredient.Quantity.Unit, ingredient.Name)
-	}
-
-	if isInteger && q != 1 {
-		qInt := int(q)
-		return fmt.Sprintf("%d %s", qInt, ingredient.Name)
-	}
-
-	if isInteger && q == 1 {
-		return fmt.Sprintf("%s", ingredient.Name)
+	if isInteger {
+		amountInt := int(amount)
+		if unit != "" {
+			return fmt.Sprintf("%d %s %s", amountInt, unit, name)
+		}
+		if amount != 1 {
+			return fmt.Sprintf("%d %s", amountInt, name)
+		}
+		return fmt.Sprintf("%s", name)
 	}
 
 	amountStr := fmt.Sprintf("%.5f", ingredient.Quantity.Amount)
@@ -152,12 +151,11 @@ func createIngredientLine(ingredient *Ingredient) string {
 		amountStr = "0" + amountStr
 	}
 
-	if ingredient.Quantity.Unit != "" {
-		return fmt.Sprintf("%s %s %s", amountStr, ingredient.Quantity.Unit, ingredient.Name)
+	if unit != "" {
+		return fmt.Sprintf("%s %s %s", amountStr, unit, name)
 	}
 
-	return fmt.Sprintf("%s %s", amountStr, ingredient.Name)
-
+	return fmt.Sprintf("%s %s", amountStr, name)
 }
 
 func parsePantryFile(fileName string) (*Pantry, error) {

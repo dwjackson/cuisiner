@@ -21,7 +21,8 @@ func ShoppingList(recipes []Recipe, pantry *Pantry) []string {
 				itemQuantities[item] = 0.0
 				itemOrder = append(itemOrder, item)
 			}
-			itemQuantities[item] += float64(ingredient.Quantity.Amount)
+			amount := ingredient.Quantity.Amount
+			itemQuantities[item] += float64(amount)
 		}
 	}
 
