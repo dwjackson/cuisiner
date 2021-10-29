@@ -22,7 +22,7 @@ func main() {
 	case "print":
 		printCommand(os.Args[2:])
 	case "shopping":
-		shoppingCommand()
+		shoppingCommand(os.Args[1:])
 	default:
 		fmt.Printf("Invalid command: %s\n", commandName)
 	}
@@ -83,7 +83,18 @@ func recipeTitleFromFileName(fileName string) string {
 	return recipeTitle
 }
 
-func shoppingCommand() {
+func shoppingCommand(args []string) {
+	var pantryRecipe *Recipe
+	if len(args) > 0 {
+		pantryFileName := args[0]
+		var pantryError error
+		pantryRecipe, pantryError = parseRecipeFile(pantryFileName)
+		if pantryError != nil {
+			fmt.Printf("%s\n", pantryError)
+			os.Exit(1)
+		}
+	}
+
 	var recipes []Recipe
 	reader := bufio.NewReader(os.Stdin)
 	fileName, err := reader.ReadString('\n')
@@ -100,7 +111,7 @@ func shoppingCommand() {
 		fileName, err = reader.ReadString('\n')
 	}
 
-	list := ShoppingList(recipes)
+	list := ShoppingList(recipes, pantryRecipe)
 
 	fmt.Println("# Shopping List")
 	fmt.Println("")
