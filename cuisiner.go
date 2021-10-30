@@ -11,24 +11,51 @@ import (
 
 const USAGE string = "USAGE: cuisiner [COMMAND] [ARGS...]"
 
-type Command = func([]string)
+type Command struct {
+	name        string
+	description string
+	run         func([]string)
+}
 
 func main() {
+	commands := initCommands()
+
 	if len(os.Args) < 2 {
 		fmt.Println(USAGE)
+		fmt.Println("Commands:")
+		for _, cmd := range commands {
+			fmt.Printf("\t%s - %s\n", cmd.name, cmd.description)
+		}
 		os.Exit(1)
 	}
 	commandName := os.Args[1]
-	commands := map[string]Command{
-		"print":    printCommand,
-		"shopping": shoppingCommand,
-	}
+
 	if command, commandExists := commands[commandName]; commandExists {
-		command(os.Args[2:])
+		command.run(os.Args[2:])
 	} else {
 		fmt.Printf("Invalid command: %s\n", commandName)
 		os.Exit(1)
 	}
+}
+
+func initCommands() map[string]Command {
+	commandList := []Command{
+		Command{
+			name:        "print",
+			description: "Print a recipe as Markdown",
+			run:         printCommand,
+		},
+		Command{
+			name:        "shopping",
+			description: "Create a shopping list from several recipes",
+			run:         shoppingCommand,
+		},
+	}
+	commands := make(map[string]Command)
+	for _, cmd := range commandList {
+		commands[cmd.name] = cmd
+	}
+	return commands
 }
 
 func printCommand(args []string) {
