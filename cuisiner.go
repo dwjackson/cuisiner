@@ -32,6 +32,9 @@ func main() {
 
 	if command, commandExists := commands[commandName]; commandExists {
 		command.run(os.Args[2:])
+	} else if strings.HasSuffix(commandName, ".cook") {
+		fmt.Println("You need to specify a command before the recipe file")
+		os.Exit(1)
 	} else {
 		fmt.Printf("Invalid command: %s\n", commandName)
 		os.Exit(1)
