@@ -21,14 +21,15 @@ func main() {
 	commands := initCommands()
 
 	if len(os.Args) < 2 {
-		fmt.Println(USAGE)
-		fmt.Println("Commands:")
-		for _, cmd := range commands {
-			fmt.Printf("\t%s - %s\n", cmd.name, cmd.description)
-		}
+		printHelp(commands)
 		os.Exit(1)
 	}
 	commandName := os.Args[1]
+
+	if commandName == "-h" || commandName == "--help" {
+		printHelp(commands)
+		os.Exit(1)
+	}
 
 	if command, commandExists := commands[commandName]; commandExists {
 		command.run(os.Args[2:])
@@ -38,6 +39,14 @@ func main() {
 	} else {
 		fmt.Printf("Invalid command: %s\n", commandName)
 		os.Exit(1)
+	}
+}
+
+func printHelp(commands map[string]Command) {
+	fmt.Println(USAGE)
+	fmt.Println("Commands:")
+	for _, cmd := range commands {
+		fmt.Printf("\t%s - %s\n", cmd.name, cmd.description)
 	}
 }
 
