@@ -22,8 +22,11 @@ type Ingredient struct {
 var knownFractions = map[float64]string{
 	0.125: "⅛",
 	0.25:  "¼",
+	0.375: "⅜",
 	0.5:   "½",
+	0.625: "⅝",
 	0.75:  "¾",
+	0.875: "⅞",
 }
 
 func (i *Ingredient) FormatAmount() string {

@@ -30,6 +30,9 @@ func TestFormatFractions(t *testing.T) {
 		0.25:  "¼",
 		0.5:   "½",
 		0.75:  "¾",
+		0.375: "⅜",
+		0.625: "⅝",
+		0.875: "⅞",
 	}
 	for decimal, fraction := range fractions {
 		ingredient := Ingredient{
